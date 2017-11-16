@@ -5,8 +5,58 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:oefDataGrid"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="450" Width="525">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90*"></RowDefinition>
+            <RowDefinition Height="149*"></RowDefinition>
+            <RowDefinition Height="180*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <DockPanel>
+            <ComboBox Margin="5" DockPanel.Dock="Left" Width="250"></ComboBox>
+            <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Width="250">
+                <Label>567 Pasadena Ave</Label>
+                <Label>Tustin</Label>
+                <Label>Totaal:</Label>
+            </StackPanel>
+        </DockPanel>
+
+        <DataGrid Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="StoreId"></DataGridTextColumn>
+                <DataGridTextColumn Header="Ordnum"></DataGridTextColumn>
+                <DataGridTextColumn Header="Orddate"></DataGridTextColumn>
+                <DataGridTextColumn Header="Qty"></DataGridTextColumn>
+                <DataGridTextColumn Header="Payterms"></DataGridTextColumn>
+                <DataGridTextColumn Header="Titleid"></DataGridTextColumn>
+                <DataGridTextColumn Header="Title"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="2">
+
+            <DockPanel>
+                <Label DockPanel.Dock="Left" HorizontalAlignment="Left">Ordernummer</Label>
+                <TextBox Name="txtOrderNummer" Margin="5" HorizontalAlignment="Right" Width="270"></TextBox>
+            </DockPanel>
+
+            <DockPanel>
+                <Label DockPanel.Dock="Left">Quantity</Label>
+                <TextBox Name="txtQuantity" Margin="5" Width="270" HorizontalAlignment="Right"></TextBox>
+            </DockPanel>
+
+            <DockPanel>
+                <Label DockPanel.Dock="Left">Payterms</Label>
+                <TextBox Name="txtPayterms" Margin="5" HorizontalAlignment="Right" Width="270"></TextBox>
+            </DockPanel>
+
+            <DockPanel>
+                <Label DockPanel.Dock="Left">Title</Label>
+                <ComboBox Name="cmdTitle" Margin="5" HorizontalAlignment="Right" Width="270"></ComboBox>
+            </DockPanel>
+            <Button Name="btnToevoegen">Toevoegen</Button>
+        </StackPanel>
+
     </Grid>
 </Window>
