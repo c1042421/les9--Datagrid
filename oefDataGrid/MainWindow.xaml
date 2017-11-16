@@ -16,9 +16,7 @@
         <DockPanel>
             <ComboBox Margin="5" DockPanel.Dock="Left" Width="250"></ComboBox>
             <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Width="250">
-                <Label>567 Pasadena Ave</Label>
-                <Label>Tustin</Label>
-                <Label>Totaal:</Label>
+                <Label Name="lblInfo"></Label>
             </StackPanel>
         </DockPanel>
 
