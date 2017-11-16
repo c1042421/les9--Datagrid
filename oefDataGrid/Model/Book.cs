@@ -24,6 +24,10 @@ namespace oefDataGrid
             _type = type;
         }
 
+        public Book()
+        {
+        }
+
         public double Price { get => _price; set => _price = value; }
         public string Pub_id { get => _pub_id; set => _pub_id = value; }
         public string Title { get => _title; set => _title = value; }
