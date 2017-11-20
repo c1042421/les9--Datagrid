@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace oefDataGrid
 {
-    class Sale: INotifyPropertyChanged, IEditableObject, ICloneable
+    class Sale: INotifyPropertyChanged, IEditableObject, ICloneable, IDataErrorInfo
     {
         private Sale _backup;
         private Book _book;
@@ -69,6 +69,55 @@ namespace oefDataGrid
         public object Clone() => this;
         
         public double SubTotaal => Qty * Book.Price;
-        
+
+        public bool IsValid() => string.IsNullOrEmpty(Error);
+
+        public string Error
+        {
+            get
+            {
+                string result = "";
+                foreach (var item in GetType().GetProperties())
+                {
+                    string error = this[item.Name];
+                    
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        result += error + Environment.NewLine;
+                    }
+                }
+                return result;
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                Dictionary<string, Tuple<bool, string>> error = new Dictionary<string, Tuple<bool, string>>();
+
+                error.Add("Book", new Tuple<bool, string>(Book == null,"Book is null!"));
+                error.Add("Ord_date", new Tuple<bool, string>(Ord_date > DateTime.Now,"Order date is after today!"));
+                error.Add("Ord_num", new Tuple<bool, string>(string.IsNullOrEmpty(Ord_num),"Order number is empty!"));
+                error.Add("Payterms", new Tuple<bool, string>(string.IsNullOrEmpty(Payterms),"Payterms is empty!"));
+                error.Add("Qty", new Tuple<bool, string>(Qty < 0, "Qty is below 0!"));
+                error.Add("Stor_id", new Tuple<bool, string>(Stor_id == 0, "Stor_id is 0!"));
+
+                if (error.ContainsKey(columnName))
+                {
+                    string errorMessage = error[columnName].Item2;
+                    bool columnIsValid = error[columnName].Item1;
+
+                    if (columnIsValid)
+                    {
+                        return errorMessage;
+                    }
+                }
+
+                return null;
+            }
+        }
+
+
     }
 }
