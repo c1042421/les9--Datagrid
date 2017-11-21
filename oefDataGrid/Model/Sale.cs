@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace oefDataGrid
 {
-    class Sale: INotifyPropertyChanged, IEditableObject, ICloneable, IDataErrorInfo
+    class Sale : INotifyPropertyChanged, IEditableObject, ICloneable, IDataErrorInfo
     {
+        #region fields
         private Sale _backup;
         private Book _book;
         private DateTime _ord_date;
@@ -16,11 +15,15 @@ namespace oefDataGrid
         private string _payterms;
         private int _qty;
         private int _stor_id;
+        #endregion
 
+        #region PropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanged(string propName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-       
+        #endregion
+
+        #region constructors
         public Sale(int stor_id, string ord_num, DateTime ord_date, int qty, string payterms, Book book)
         {
             Stor_id = stor_id;
@@ -31,21 +34,69 @@ namespace oefDataGrid
             Book = book;
         }
 
-        public Sale(int stor_id, string ord_num, int qty, string payterms, Book book): this(stor_id,ord_num,DateTime.Now.Date,qty,payterms,book) { }
+        public Sale(int stor_id, string ord_num, int qty, string payterms, Book book) : this(stor_id, ord_num, DateTime.Now.Date, qty, payterms, book) { }
 
         public Sale() : this(0, "", 0, "", null) { }
 
-        public DateTime Ord_date { get => _ord_date; set => _ord_date = value; }
-        public string Ord_num { get => _ord_num; set => _ord_num = value; }
-        public string Payterms { get => _payterms; set => _payterms = value; }
-        public int Qty { get => _qty; set => _qty = value; }
-        public int Stor_id { get => _stor_id; set => _stor_id = value; }
-        internal Book Book { get => _book; set => _book = value; }
+        #endregion
 
+        #region Properties
+        public DateTime Ord_date
+        {
+            get => _ord_date;
+            set
+            {
+                _ord_date = value;
+                RaisePropertyChanged("Ord_date");
+            }
+        }
+        public string Ord_num
+        {
+            get => _ord_num;
+            set
+            {
+                _ord_num = value;
+                RaisePropertyChanged("Ord_num");
+            }
+        }
+
+        public string Payterms
+        {
+            get => _payterms; set
+            {
+                _payterms = value;
+                RaisePropertyChanged("Payterms");
+            }
+        }
+        public int Qty
+        {
+            get => _qty; set
+            {
+                _qty = value;
+                RaisePropertyChanged("Qty");
+            }
+        }
+        public int Stor_id
+        {
+            get => _stor_id; set
+            {
+                _stor_id = value;
+                RaisePropertyChanged("Stor_id");
+            }
+        }
+        internal Book Book
+        {
+            get => _book; set
+            {
+                _book = value;
+                RaisePropertyChanged("Book");
+            }
+        }
         public string FormattedTotaal { get => SubTotaal.ToString("c"); }
+        public double SubTotaal => Book != null ? Qty * Book.Price : 0;
+        #endregion
 
-        public override string ToString() => "";
-
+        #region IEditableObject
         public void BeginEdit()
         {
             _backup = this;
@@ -65,11 +116,18 @@ namespace oefDataGrid
             Stor_id = _backup.Stor_id;
             Book = _backup.Book;
         }
+        #endregion
 
-        public object Clone() => this;
-        
-        public double SubTotaal => Qty * Book.Price;
+        #region IClonable
+        public object Clone()
+        {
+            Sale self = (Sale)MemberwiseClone();
+            self.Book = (Book)self.Book.Clone();
+            return self;
+        }
+        #endregion
 
+        #region IDataErrorInfo
         public bool IsValid() => string.IsNullOrEmpty(Error);
 
         public string Error
@@ -80,7 +138,7 @@ namespace oefDataGrid
                 foreach (var item in GetType().GetProperties())
                 {
                     string error = this[item.Name];
-                    
+
                     if (!string.IsNullOrEmpty(error))
                     {
                         result += error + Environment.NewLine;
@@ -94,12 +152,13 @@ namespace oefDataGrid
         {
             get
             {
+              
                 Dictionary<string, Tuple<bool, string>> error = new Dictionary<string, Tuple<bool, string>>();
 
-                error.Add("Book", new Tuple<bool, string>(Book == null,"Book is null!"));
-                error.Add("Ord_date", new Tuple<bool, string>(Ord_date > DateTime.Now,"Order date is after today!"));
-                error.Add("Ord_num", new Tuple<bool, string>(string.IsNullOrEmpty(Ord_num),"Order number is empty!"));
-                error.Add("Payterms", new Tuple<bool, string>(string.IsNullOrEmpty(Payterms),"Payterms is empty!"));
+                error.Add("Book", new Tuple<bool, string>(Book == null, "Book is null!"));
+                error.Add("Ord_date", new Tuple<bool, string>(Ord_date > DateTime.Now, "Order date is after today!"));
+                error.Add("Ord_num", new Tuple<bool, string>(string.IsNullOrEmpty(Ord_num), "Order number is empty!"));
+                error.Add("Payterms", new Tuple<bool, string>(string.IsNullOrEmpty(Payterms), "Payterms is empty!"));
                 error.Add("Qty", new Tuple<bool, string>(Qty < 0, "Qty is below 0!"));
                 error.Add("Stor_id", new Tuple<bool, string>(Stor_id == 0, "Stor_id is 0!"));
 
@@ -117,7 +176,15 @@ namespace oefDataGrid
                 return null;
             }
         }
+        #endregion
 
+        public override string ToString() => Stor_id + " " + Ord_num;
 
+        public override bool Equals(object obj)
+        {
+            var sale = obj as Sale;
+            return sale != null &&
+                   Book.Equals(sale.Book) && Ord_num == sale.Ord_num;
+        }
     }
 }
