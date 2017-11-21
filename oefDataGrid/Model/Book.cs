@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace oefDataGrid
 {
@@ -41,7 +38,7 @@ namespace oefDataGrid
         #endregion
 
         #region IDataErrorInfo
-        public bool IsValid => string.IsNullOrEmpty(Error);
+        public bool IsValid() => string.IsNullOrEmpty(Error);
 
         public string Error
         {

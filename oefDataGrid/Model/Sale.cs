@@ -67,7 +67,7 @@ namespace oefDataGrid
                 RaisePropertyChanged("Stor_id");
             }
         }
-        internal Book Book
+        public Book Book
         {
             get => _book; set
             {
@@ -135,9 +135,11 @@ namespace oefDataGrid
             get
             {
                 string result = "";
+                string error = "";
+
                 foreach (var item in GetType().GetProperties())
                 {
-                    string error = this[item.Name];
+                    error = this[item.Name];
 
                     if (!string.IsNullOrEmpty(error))
                     {
@@ -152,33 +154,26 @@ namespace oefDataGrid
         {
             get
             {
-
                 Dictionary<string, Tuple<bool, string>> error = new Dictionary<string, Tuple<bool, string>>();
-
+               
                 error.Add("Book", new Tuple<bool, string>(Book == null, "Book is null!"));
-                error.Add("Ord_date", new Tuple<bool, string>(Ord_date > DateTime.Now, "Order date is after today!"));
                 error.Add("Ord_num", new Tuple<bool, string>(string.IsNullOrEmpty(Ord_num), "Order number is empty!"));
-                error.Add("Payterms", new Tuple<bool, string>(string.IsNullOrEmpty(Payterms), "Payterms is empty!"));
                 error.Add("Qty", new Tuple<bool, string>(Qty < 0, "Qty is below 0!"));
-                error.Add("Stor_id", new Tuple<bool, string>(Stor_id == 0, "Stor_id is 0!"));
+                error.Add("Stor_id", new Tuple<bool, string>(Stor_id < 0, "Stor_id moet groter zijn dan 0!"));
 
                 if (error.ContainsKey(columnName))
                 {
                     string errorMessage = error[columnName].Item2;
-                    bool columnIsValid = error[columnName].Item1;
+                    bool columnIsNotValid = error[columnName].Item1;
 
-                    if (columnIsValid)
-                    {
-                        return errorMessage;
-                    }
+                    return columnIsNotValid ? errorMessage : null;
                 }
-
                 return null;
             }
         }
         #endregion
 
-        #region Ovverrides
+        #region Overrides
         public override string ToString() => Stor_id + " " + Ord_num;
 
         public override bool Equals(object obj)

@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace oefDataGrid
 {
-    class Store: INotifyPropertyChanged, ICloneable
+    class Store : INotifyPropertyChanged, ICloneable
     {
+        #region Fields
         private string _city;
         private ObservableCollection<Sale> _lijstSale;
         private string _state;
@@ -17,11 +18,15 @@ namespace oefDataGrid
         private int _stor_id;
         private string _stor_name;
         private string _zip;
+        #endregion
 
+        #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanged(string propName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+        #endregion
 
+        #region Constructors
         public Store(string city, string state, string stor_address, int stor_id, string stor_name, string zip, ObservableCollection<Sale> lijstSale)
         {
             City = city;
@@ -34,7 +39,9 @@ namespace oefDataGrid
         }
 
         public Store() : this("", "", "", 0, "", "", null) { }
+        #endregion
 
+        #region Properties
         public string City { get => _city; set => _city = value; }
         public string State { get => _state; set => _state = value; }
         public string Stor_address { get => _stor_address; set => _stor_address = value; }
@@ -45,8 +52,9 @@ namespace oefDataGrid
 
         public string FormattedTotaal { get => Totaal().ToString("c"); }
         public string Details { get => string.Format("{0}\n{1}\nTotaal: {2}", Stor_address, City, FormattedTotaal); }
+        #endregion
 
-
+        #region Methods
         public double Totaal()
         {
             double totaal = 0;
@@ -56,10 +64,10 @@ namespace oefDataGrid
             }
             return totaal;
         }
+        #endregion
 
-
-
+        #region ICloneable
         public object Clone() => this;
-        
+        #endregion
     }
 }
