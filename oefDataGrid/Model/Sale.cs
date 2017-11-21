@@ -7,7 +7,7 @@ namespace oefDataGrid
 {
     class Sale : INotifyPropertyChanged, IEditableObject, ICloneable, IDataErrorInfo
     {
-        #region fields
+        #region Fields
         private Sale _backup;
         private Book _book;
         private DateTime _ord_date;
@@ -23,7 +23,7 @@ namespace oefDataGrid
         public void RaisePropertyChanged(string propName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
         #endregion
 
-        #region constructors
+        #region Constructors
         public Sale(int stor_id, string ord_num, DateTime ord_date, int qty, string payterms, Book book)
         {
             Stor_id = stor_id;
@@ -59,6 +59,22 @@ namespace oefDataGrid
                 RaisePropertyChanged("Ord_num");
             }
         }
+        public int Stor_id
+        {
+            get => _stor_id; set
+            {
+                _stor_id = value;
+                RaisePropertyChanged("Stor_id");
+            }
+        }
+        internal Book Book
+        {
+            get => _book; set
+            {
+                _book = value;
+                RaisePropertyChanged("Book");
+            }
+        }
 
         public string Payterms
         {
@@ -74,22 +90,6 @@ namespace oefDataGrid
             {
                 _qty = value;
                 RaisePropertyChanged("Qty");
-            }
-        }
-        public int Stor_id
-        {
-            get => _stor_id; set
-            {
-                _stor_id = value;
-                RaisePropertyChanged("Stor_id");
-            }
-        }
-        internal Book Book
-        {
-            get => _book; set
-            {
-                _book = value;
-                RaisePropertyChanged("Book");
             }
         }
         public string FormattedTotaal { get => SubTotaal.ToString("c"); }
@@ -152,7 +152,7 @@ namespace oefDataGrid
         {
             get
             {
-              
+
                 Dictionary<string, Tuple<bool, string>> error = new Dictionary<string, Tuple<bool, string>>();
 
                 error.Add("Book", new Tuple<bool, string>(Book == null, "Book is null!"));
@@ -178,6 +178,7 @@ namespace oefDataGrid
         }
         #endregion
 
+        #region Ovverrides
         public override string ToString() => Stor_id + " " + Ord_num;
 
         public override bool Equals(object obj)
@@ -186,5 +187,15 @@ namespace oefDataGrid
             return sale != null &&
                    Book.Equals(sale.Book) && Ord_num == sale.Ord_num;
         }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1637221800;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Ord_num);
+            hashCode = hashCode * -1521134295 + Stor_id.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<Book>.Default.GetHashCode(Book);
+            return hashCode;
+        }
+        #endregion
     }
 }
