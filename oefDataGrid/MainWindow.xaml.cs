@@ -20,7 +20,7 @@ namespace oefDataGrid
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<Sale> sales;
+        DataManager dataManager;
 
         public MainWindow()
         {
@@ -31,15 +31,10 @@ namespace oefDataGrid
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            sales = new List<Sale>();
+            dataManager = new DataManager();
 
-            sales.Add(new Sale(1, "20", 3, "NO Payterms", new Book(20, "5", "Books", "3", "Horror")));
-            sales.Add(new Sale(2, "15", 3, "NO Payterms", new Book(20, "5", "Harry Potter", "5", "Thriller")));
-            sales.Add(new Sale(3, "25", 3, "NO Payterms", new Book(20, "5", "Game Of Thrones", "7", "Thriller")));
-            sales.Add(new Sale(4, "30", 3, "NO Payterms", new Book(20, "5", "Het meisje in de trein", "2", "Horror")));
-
-
-            dgrSale.ItemsSource = sales;
+            cmbStores.ItemsSource = dataManager.GetStores();
+            cmbStores.DisplayMemberPath = "Stor_name";
         }
 
         private void btnToevoegen_Click(object sender, RoutedEventArgs e)
@@ -48,15 +43,16 @@ namespace oefDataGrid
 
             if (int.TryParse(txtQuantity.Text, out qty))
             {
-                Sale sale = new Sale(2, txtOrderNummer.Text, DateTime.Now, qty, txtPayterms.Text, new Book(20, "2", txtTitle.Text, "2", "Horror"));
-                if (sale.IsValid())
-                {
-                    sales.Add(sale);
-                }
+               
             }
+        }
+
+        private void cmbStores_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Store store = (Store)cmbStores.SelectedItem;
 
             dgrSale.ItemsSource = null;
-            dgrSale.ItemsSource = sales;
+            dgrSale.ItemsSource = store.LijstSale;
         }
     }
 }
