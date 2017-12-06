@@ -161,14 +161,14 @@ namespace oefDataGrid
                 error.Add("Qty", new Tuple<bool, string>(Qty < 0, "Qty is below 0!"));
                 error.Add("Stor_id", new Tuple<bool, string>(Stor_id < 0, "Stor_id moet groter zijn dan 0!"));
 
+                string errorMessage = null;
+
                 if (error.ContainsKey(columnName))
                 {
-                    string errorMessage = error[columnName].Item2;
-                    bool columnIsNotValid = error[columnName].Item1;
-
-                    return columnIsNotValid ? errorMessage : null;
+                   bool columnIsNotValid = error[columnName].Item1;
+                   if (columnIsNotValid) { errorMessage = error[columnName].Item2; }
                 }
-                return null;
+                return errorMessage;
             }
         }
         #endregion
